@@ -1,3 +1,5 @@
+role_xenocanto::conf::git_repo_key_php: 'dadieda'
+
 role_xenocanto::conf::mysql_root_password: 'mypass'
 
 role_xenocanto::conf::override_options:
