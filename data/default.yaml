@@ -1,4 +1,4 @@
-role_xenocanto::db:
+role_xenocanto::conf:
   dbhash:
     xenocanto:
       user: 'local'
