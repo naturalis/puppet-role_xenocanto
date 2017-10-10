@@ -1,4 +1,6 @@
 base::vcsrepo_hash:
+  'role_xenocanto'
+    source: 'https://github.com/naturalis/puppet-role_xenocanto'
   'role_mysql':
     source: 'https://github.com/naturalis/puppet-role_mysql'
   'mysql':
