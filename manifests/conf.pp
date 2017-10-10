@@ -5,10 +5,10 @@
 class role_xenocanto::conf (
 
   # ::web
-  $git_repo_key_php,
-  $git_repo_url          = 'ssh://git@github.com/xeno-canto/code.git',
-  $git_repo_ensure       = 'latest',
-  $git_repo_rev          = 'master',
+  $git_repo_key_php = undef,
+  $git_repo_url     = 'ssh://git@github.com/xeno-canto/code.git',
+  $git_repo_ensure  = 'latest',
+  $git_repo_rev     = 'master',
 
   # ::db
   $mysql_root_password,
