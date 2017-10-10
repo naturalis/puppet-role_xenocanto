@@ -1,4 +1,7 @@
+# == Class role_xenocanto::conf
+#
 # All configurable settings
+#
 class role_xenocanto::conf (
 
   # ::web
