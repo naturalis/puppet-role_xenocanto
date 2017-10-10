@@ -12,7 +12,7 @@ class role_xenocanto::conf (
   $override_options    = undef,
   $users               = undef,
   $grants              = undef,
-  $db_hash             = under,
+  $db_hash             = undef,
 
   $web_host            = '127.0.0.1',
   $db_host             = '127.0.0.1',
