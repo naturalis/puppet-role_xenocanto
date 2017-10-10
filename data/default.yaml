@@ -1,0 +1,14 @@
+base::vcsrepo_hash:
+  'role_mysql':
+    source: 'https://github.com/naturalis/puppet-role_mysql'
+  'mysql':
+    source: 'https://github.com/puppetlabs/puppetlabs-mysql'
+
+role_xenocanto::db:
+  dbhash:
+    xenocanto:
+      user: 'local'
+      password: 'mypass'
+      host: 'localhost'
+      grant:
+        - SELECT
