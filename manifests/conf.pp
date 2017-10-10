@@ -10,7 +10,7 @@ class role_xenocanto::conf (
   $git_repo_ensure  = 'latest',
   $git_repo_rev     = 'master',
 
-  # ::db
+  # ::db, defaults in /data/defaults.yaml
   $mysql_root_password,
   $override_options,
   $users,
