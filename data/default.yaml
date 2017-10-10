@@ -6,3 +6,7 @@ role_xenocanto::conf:
       host: 'localhost'
       grant:
         - SELECT
+  override_options:
+    mysqld:
+      bind-address: '0.0.0.0'
+      max_allowed_packet: '512M'
