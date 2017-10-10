@@ -8,8 +8,19 @@ class role_xenocanto::conf (
   $git_repo_rev          = 'master',
 
   # ::db
-  $web_host           = '127.0.0.1',
-  $db_host            = '127.0.0.1',
-  $db_name            = 'waarneming',
+  $mysql_root_password = undef,
+  $override_options    = undef,
+  $users               = undef,
+  $grants              = undef,
+  $db_hash             = under,
 
-){}
+  $web_host            = '127.0.0.1',
+  $db_host             = '127.0.0.1',
+  $db_name             = 'xenocanto',
+
+) {
+
+
+
+
+}
