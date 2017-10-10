@@ -4,11 +4,11 @@ class role_xenocanto::db {
 
   # Install MySQL
   class { '::role_mysql':
-    mysql_root_password => undef,
-    override_options    => undef,
-    users               => undef,
-    grants              => undef,
-    db_hash             => undef,
+    mysql_root_password => $role_xenocanto::conf::mysql_root_password,
+    override_options    => $role_xenocanto::conf::override_options,
+    users               => $role_xenocanto::conf::users,
+    grants              => $role_xenocanto::conf::grants,
+    db_hash             => $role_xenocanto::conf::db_hash,
   }
 
 }
