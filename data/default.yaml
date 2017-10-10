@@ -1,11 +1,34 @@
-role_xenocanto::conf::dbhash:
+role_xenocanto::conf::mysql_root_password: 'mypass'
+
+role_xenocanto::conf::override_options:
+  mysqld:
+    bind-address: '0.0.0.0'
+    max_allowed_packet: '512M'
+
+role_xenocanto::conf::users:
+  'xenocanto@localhost':
+    ensure: 'present'
+    password: 'mypass'
+  'xenocanto@%':
+    ensure: 'present'
+    password: 'mypass'
+
+role_xenocanto::conf::grants:
+  'xenocanto@localhost/xenocanto.*':
+    privileges:
+      - ALL
+    table: 'xenocanto.*'
+    user: 'xenocanto@localhost'
+  'xenocanto@%/xenocanto.*':
+    privileges:
+      - ALL
+    table: 'xenocanto.*'
+    user: 'xenocanto@%'
+
+role_xenocanto::conf::db_hash:
   xenocanto:
     user: 'local'
     password: 'mypass'
     host: 'localhost'
     grant:
       - SELECT
-role_xenocanto::conf::override_options:
-  mysqld:
-    bind-address: '0.0.0.0'
-    max_allowed_packet: '512M'
