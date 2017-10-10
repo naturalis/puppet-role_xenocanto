@@ -1,0 +1,8 @@
+role_xenocanto::db:
+  dbhash:
+    xenocanto:
+      user: 'local'
+      password: 'mypass'
+      host: 'localhost'
+      grant:
+        - SELECT
