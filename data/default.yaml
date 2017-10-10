@@ -1,12 +1,11 @@
-role_xenocanto::conf:
-  dbhash:
-    xenocanto:
-      user: 'local'
-      password: 'mypass'
-      host: 'localhost'
-      grant:
-        - SELECT
-  override_options:
+role_xenocanto::conf::dbhash:
+  xenocanto:
+    user: 'local'
+    password: 'mypass'
+    host: 'localhost'
+    grant:
+      - SELECT
+  role_xenocanto::conf::override_options:
     mysqld:
       bind-address: '0.0.0.0'
       max_allowed_packet: '512M'
