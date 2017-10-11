@@ -1,4 +1,7 @@
+# == Class role_xenocanto::conf
+#
 # All configurable settings
+#
 class role_xenocanto::conf (
   # ::repo
   $git_repo_rootdirs     = ['/opt/git'],
@@ -54,20 +57,14 @@ class role_xenocanto::conf (
 
 
   # ::db
-  $mysql_root_password   = undef,
-  $override_options      = undef,
-  $users                 = undef,
-  $grants                = undef,
-  $db_hash               = undef,
-
   $web_host              = '127.0.0.1',
   $db_host               = '127.0.0.1',
   $db_name               = 'xenocanto',
   $db_password,
-
+  $mysql_root_password,
+  $override_options,
+  $users,
+  $grants,
+  $db_hash,
 ) {
-
-
-
-
 }

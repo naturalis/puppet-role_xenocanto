@@ -2,6 +2,9 @@
 #
 class role_xenocanto::db {
 
+  # Include conf file with parameter settings
+  include role_xenocanto::conf
+
   # Install MySQL
   class { '::role_mysql':
     mysql_root_password => $role_xenocanto::conf::mysql_root_password,
