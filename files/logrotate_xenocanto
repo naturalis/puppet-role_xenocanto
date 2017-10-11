@@ -1,0 +1,8 @@
+/var/log/xenocanto/*.log {
+        rotate 7
+        weekly
+        compress
+        delaycompress
+        missingok
+        notifempty
+        }
