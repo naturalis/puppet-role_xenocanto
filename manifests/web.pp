@@ -40,28 +40,13 @@ class role_xenocanto::web (
   class { 'apache::mod::proxy_http': }
   class { 'apache::mod::cache': }
   class { 'apache::mod::ssl': }
+  class { 'apache::mod::php': }
 
   # Create Apache Virtual host
-  create_resources('apache::vhost', $role_xenocanto::web::instances)
-
-  # Check out scripts repo
-  vcsrepo { 'xenocanto git repo':
-    path     => $::role_xenocanto::conf::git_repo_dir,
-    ensure   => present,
-    provider => git,
-    source   => $::role_xenocanto::conf::git_repo_url,
-    revision => $::role_xenocanto::conf::git_repo_rev,
-    user     => 'root',
-    require  => [
-      File['/root/.ssh/id_rsa'],
-      Sshkey['xenocanto'],
-    ]
-  }
-
-
+  create_resources('apache::vhost', $role_xenocanto::conf::instances)
 
   # Create log directory and logrotate config
-  file { '/var/log/xenocanto':
+  file { '/var/log/xeno-canto':
     ensure  => directory,
     mode    => '0660',
     owner   => 'www-data',
@@ -71,10 +56,50 @@ class role_xenocanto::web (
   file { '/etc/logrotate.d/xenocanto':
     mode    => '0600',
     source  => 'puppet:///modules/role_xenocanto/logrotate_xenocanto',
-    require => File['/var/log/xenocanto']
+    require => File['/var/log/xeno-canto']
   }
 
+  # clone repository and create symlink to docroot
   class { 'role_xenocanto::repo': }
+
+  file { $role_xenocanto::conf::docroot:
+    ensure  => link,
+    target  => $role_xenocanto::conf::git_repo_dir,
+    require => Class['role_xenocanto::repo']
+  }
+
+  file { "${role_xenocanto::conf::git_repo_dir}/cache":
+    ensure  => directory,
+    owner   => 'www-data',
+    group   => 'root',
+    require => Class['role_xenocanto::repo']
+  }
+
+
+  file { "${role_xenocanto::conf::docroot}/settings.yml":
+    ensure    => 'present',
+    content   =>  template('role_xenocanto/settings.yml.erb'),
+    mode      => '0644',
+    require   => File[$role_xenocanto::conf::docroot]
+  }
+
+  file { "${role_xenocanto::conf::docroot}/config.php":
+    ensure    => 'present',
+    content   =>  template('role_xenocanto/config.php.erb'),
+    mode      => '0644',
+    require   => File[$role_xenocanto::conf::docroot]
+  }
+
+  # install sonogen and typefind
+  file { '/usr/local/bin/sonogen':
+    mode    => '0755',
+    source  => 'puppet:///modules/role_xenocanto/sonogen',
+  }
+
+  file { '/usr/local/bin/soundprint':
+    mode    => '0755',
+    source  => 'puppet:///modules/role_xenocanto/soundprint',
+  }
 
   # Crontabs for xeno-canto
   cron { 'update-stats cronjob':
@@ -101,15 +126,12 @@ class role_xenocanto::web (
     require => Class['role_xenocanto::repo']
   }
 
-  cron { 'rotate-play-stats cronjob':
+  cron { 'generate-full-sonos cronjob':
     command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir}; php ./tasks/generate-full-sonos.php > /dev/null",
     user    => root,
     minute  => '*/5',
     require => Class['role_xenocanto::repo']
   }
-
-
-
 
 }
 

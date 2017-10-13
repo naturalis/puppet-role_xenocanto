@@ -10,9 +10,20 @@ class role_xenocanto::conf (
   $git_repo_ensure       = 'latest',
   $git_repo_revision     = 'master',
   $git_repo_key,
+  $git_repo_keyname      = 'github.com',
 
   # ::web
-  $web_packages          =  ['locale-all','imagemagick'],
+  $web_packages          =  ['locales-all',
+                             'imagemagick',
+                             'libgstreamer1.0-0',
+                             'gstreamer1.0-plugins-base',
+                             'gstreamer1.0-plugins-good',
+                             'gstreamer1.0-plugins-ugly',
+                             'libglibmm-2.4-1v5',
+                             'libcairomm-1.0-1v5',
+                             'libpangocairo-1.0-0'
+                            ],
+  $docroot               = '/var/www/htdocs',
   $enables_ssl           = false,
   $enable_letsencrypt    = false,
   $server_name           = 'test.xeno-canto.org',
@@ -43,7 +54,7 @@ class role_xenocanto::conf (
                                  'additional_includes'  => '/etc/letsencrypt/options-ssl-apache.conf',
                                  },
                                },
-  $instances                = { "${::role_xenocanto::conf::server_name}-nonssl" => {
+  $instances                = { 'xeno-canto.org-nonssl' => {
                                  'serveraliases'        => '*.xeno-canto.org',
                                  'docroot'              => '/var/www/htdocs',
                                  'directories'          => [{ 'path' => '/var/www/htdocs',
@@ -60,6 +71,7 @@ class role_xenocanto::conf (
   $web_host              = '127.0.0.1',
   $db_host               = '127.0.0.1',
   $db_name               = 'xenocanto',
+  $db_user               = 'xenocanto',
   $db_password,
   $mysql_root_password,
   $override_options,

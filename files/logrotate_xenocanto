@@ -1,4 +1,4 @@
-/var/log/xenocanto/*.log {
+/var/log/xeno-canto/*.log {
         rotate 7
         weekly
         compress
