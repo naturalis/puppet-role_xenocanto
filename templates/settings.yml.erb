@@ -16,5 +16,15 @@ prod:
         database: <%= scope.lookupvar('role_xenocanto::conf::db_name') %>
     debug: FALSE
 
+#settings for the production environment
+task:
+    db:
+        host: <%= scope.lookupvar('role_xenocanto::conf::db_host') %>
+        user: <%= scope.lookupvar('role_xenocanto::conf::db_user') %>
+        password: <%= scope.lookupvar('role_xenocanto::conf::db_password') %>
+        database: <%= scope.lookupvar('role_xenocanto::conf::db_name') %>
+    debug: TRUE
+    useMockSession: true
+
 
 

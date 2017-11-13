@@ -16,13 +16,31 @@ class role_xenocanto::web (
   class { '::php':
     manage_repos => true,
     ensure     => present,
-    fpm        => true,
+    fpm        => false,
     extensions => {
       mysql  => {},
       mcrypt => {},
       curl   => {},
     },
+    settings   => {
+        'PHP/max_execution_time'  => '-1',
+        'PHP/max_input_time'      => '-1',
+        'PHP/memory_limit'        => '-1',
+        'Date/date.timezone'      => 'Europe/Amsterdam',
+    }
   }
+
+  class { '::php::fpm':
+    settings   => {
+        'PHP/max_execution_time'  => $role_xenocanto::conf::php_max_execution_time,
+        'PHP/max_input_time'      => $role_xenocanto::conf::php_max_input_time,
+        'PHP/memory_limit'        => $role_xenocanto::conf::php_memory_limit,
+        'PHP/post_max_size'       => $role_xenocanto::conf::php_post_max_size,
+        'PHP/upload_max_filesize' => $role_xenocanto::conf::php_upload_max_filesize,
+        'Date/date.timezone'      => 'Europe/Amsterdam',
+    }
+  }
+
 
   # Install memcached for caching and user sessions
   class { 'memcached': }
@@ -39,11 +57,16 @@ class role_xenocanto::web (
   class { 'apache::mod::proxy': }
   class { 'apache::mod::proxy_http': }
   class { 'apache::mod::cache': }
-  class { 'apache::mod::ssl': }
   class { 'apache::mod::php': }
 
-  # Create Apache Virtual host
-  create_resources('apache::vhost', $role_xenocanto::conf::instances)
+
+  # enable ssl with or without letsencrypt based on config
+  class { 'role_xenocanto::ssl': }
+
+  # Create instance, make sure ssl certs are installed first.
+  class { 'role_xenocanto::instances':
+    require     => Class['role_xenocanto::ssl'],
+  }
 
   # Create log directory and logrotate config
   file { '/var/log/xeno-canto':
@@ -66,6 +89,24 @@ class role_xenocanto::web (
     ensure  => link,
     target  => $role_xenocanto::conf::git_repo_dir,
     require => Class['role_xenocanto::repo']
+  }
+
+  file { $role_xenocanto::conf::datadirs:
+    ensure  => directory,
+    owner   => 'www-data',
+    group   => 'root',
+  }
+
+  file { "${role_xenocanto::conf::docroot}/sounds":
+    ensure  => link,
+    target  => '/data/sounds',
+    require => File[$role_xenocanto::conf::datadirs]
+  }
+
+  file { "${role_xenocanto::conf::docroot}/graphics":
+    ensure  => link,
+    target  => '/data/graphics',
+    require => File[$role_xenocanto::conf::datadirs]
   }
 
   file { "${role_xenocanto::conf::git_repo_dir}/cache":

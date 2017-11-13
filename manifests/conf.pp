@@ -13,7 +13,8 @@ class role_xenocanto::conf (
   $git_repo_keyname      = 'github.com',
 
   # ::web
-  $web_packages          =  ['locales-all',
+  $datadirs              = ['/data','/data/sounds','/data/graphics'],
+  $web_packages          = ['locales-all',
                              'imagemagick',
                              'libgstreamer1.0-0',
                              'gstreamer1.0-plugins-base',
@@ -24,9 +25,18 @@ class role_xenocanto::conf (
                              'libpangocairo-1.0-0'
                             ],
   $docroot               = '/var/www/htdocs',
-  $enables_ssl           = false,
+  $enable_ssl            = false,
   $enable_letsencrypt    = false,
   $server_name           = 'test.xeno-canto.org',
+  $letsencrypt_email     = 'letsencypt@mydomain.me',
+  $letsencrypt_version   = 'master',
+  $letsencrypt_domains   = ['test.xeno-canto.org'],
+  $letsencrypt_server    = 'https://acme-v01.api.letsencrypt.org/directory',
+  $recaptcha_site_key    = 'recaptcha_site_key',
+  $recaptcha_secret_key  = 'recaptcha_secret_key',
+  $google_analytics_tracking_id = 'UA-123456-1',
+  $google_maps_api_key   = 'API key here',
+  $google_maps_geocoding_key = 'Geocoding key',
   $ssl_instances         = {'xeno-canto.org-nonssl' => {
                                  'serveraliases'        => '*.xeno-canto.org',
                                  'docroot'              => '/var/www/htdocs',
@@ -66,6 +76,12 @@ class role_xenocanto::conf (
                                  }
                                },
 
+  # ::web php settings
+  $php_max_execution_time      = 90,
+  $php_max_input_time          = 300,
+  $php_memory_limit            = '256M',
+  $php_post_max_size           = '32M',
+  $php_upload_max_filesize     = '128M',
 
   # ::db
   $web_host              = '127.0.0.1',

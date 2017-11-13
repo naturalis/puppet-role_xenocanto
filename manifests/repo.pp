@@ -12,8 +12,11 @@ class role_xenocanto::repo (
 # ensure git package for repo checkouts, conflicts with letsencrypt so only when letsencrypt is disabled.
 
 
-  package { 'git':
-    ensure => installed,
+
+  if ( $role_xenocanto::conf::enable_letsencrypt == false ) {
+    package { 'git':
+      ensure => installed,
+    }
   }
 
   file { $role_xenocanto::conf::git_repo_rootdirs:
