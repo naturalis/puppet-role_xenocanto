@@ -26,11 +26,13 @@ class role_xenocanto::web (
         'PHP/max_execution_time'  => '-1',
         'PHP/max_input_time'      => '-1',
         'PHP/memory_limit'        => '-1',
+        'PHP/post_max_size'       => $role_xenocanto::conf::php_post_max_size,
+        'PHP/upload_max_filesize' => $role_xenocanto::conf::php_upload_max_filesize,
         'Date/date.timezone'      => 'Europe/Amsterdam',
     }
   }
 
-  class { '::php::fpm':
+  class { '::php::apache_config':
     settings   => {
         'PHP/max_execution_time'  => $role_xenocanto::conf::php_max_execution_time,
         'PHP/max_input_time'      => $role_xenocanto::conf::php_max_input_time,
@@ -43,11 +45,22 @@ class role_xenocanto::web (
 
 
   # Install memcached for caching and user sessions
-  class { 'memcached': }
+  class { 'memcached':
+    max_memory  => 1024,
+    user        => 'memcache',
+    listen_ip   => '127.0.0.1',
+    pidfile     => false,
+    install_dev => true,
+  }
+
+  package { 'php-memcached':
+    ensure      => latest,
+    require     => Class['::php']
+  }
 
   class { 'apache':
-      default_mods              => true,
-      mpm_module                => 'prefork',
+    default_mods              => true,
+    mpm_module                => 'prefork',
   }
 
   # install apache mods
@@ -144,7 +157,7 @@ class role_xenocanto::web (
 
   # Crontabs for xeno-canto
   cron { 'update-stats cronjob':
-    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir}; php ./tasks/update-stats.php > /dev/null",
+    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/update-stats.php > ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => 0,
     hour    => '*/2',
@@ -152,7 +165,7 @@ class role_xenocanto::web (
   }
 
   cron { 'mail notifications cronjob':
-    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir}; php ./tasks/mail_notifications.php > /dev/null",
+    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/mail_notifications.php > ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => 1,
     hour    => 0,
@@ -160,7 +173,7 @@ class role_xenocanto::web (
   }
 
   cron { 'rotate-play-stats cronjob':
-    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir}; php ./tasks/rotate-play-stats.php > /dev/null",
+    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/rotate-play-stats.php > ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => 15,
     hour    => 20,
@@ -168,7 +181,7 @@ class role_xenocanto::web (
   }
 
   cron { 'generate-full-sonos cronjob':
-    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir}; php ./tasks/generate-full-sonos.php > /dev/null",
+    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/generate-full-sonos.php > ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => '*/5',
     require => Class['role_xenocanto::repo']
