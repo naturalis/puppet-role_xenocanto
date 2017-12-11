@@ -157,7 +157,7 @@ class role_xenocanto::web (
 
   # Crontabs for xeno-canto
   cron { 'update-stats cronjob':
-    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/update-stats.php > ${::role_xenocanto::conf::cron_log}",
+    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/update-stats.php >> ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => 0,
     hour    => '*/2',
@@ -165,7 +165,7 @@ class role_xenocanto::web (
   }
 
   cron { 'mail notifications cronjob':
-    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/mail_notifications.php > ${::role_xenocanto::conf::cron_log}",
+    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/mail_notifications.php >> ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => 1,
     hour    => 0,
@@ -173,7 +173,7 @@ class role_xenocanto::web (
   }
 
   cron { 'rotate-play-stats cronjob':
-    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/rotate-play-stats.php > ${::role_xenocanto::conf::cron_log}",
+    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/rotate-play-stats.php >> ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => 15,
     hour    => 20,
@@ -181,7 +181,7 @@ class role_xenocanto::web (
   }
 
   cron { 'generate-full-sonos cronjob':
-    command => "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/generate-full-sonos.php > ${::role_xenocanto::conf::cron_log}",
+    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/generate-full-sonos.php >> ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => '*/5',
     require => Class['role_xenocanto::repo']
