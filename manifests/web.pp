@@ -5,9 +5,7 @@
 class role_xenocanto::web (
 ) {
   # Install support packages
-  package { $role_xenocanto::conf::web_packages:
-    ensure      => installed,
-  }
+  ensure_packages($role_xenocanto::conf::web_packages)
 
   # Install Postfix mail server
   class { 'role_xenocanto::mail': }
