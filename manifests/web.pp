@@ -114,6 +114,12 @@ class role_xenocanto::web (
     require => File[$role_xenocanto::conf::datadirs]
   }
 
+  file { "${role_xenocanto::conf::docroot}/ranges":
+    ensure  => link,
+    target  => '/data/ranges',
+    require => File[$role_xenocanto::conf::datadirs]
+  }
+
   file { "${role_xenocanto::conf::docroot}/graphics":
     ensure  => link,
     target  => '/data/graphics',

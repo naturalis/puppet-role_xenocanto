@@ -13,9 +13,8 @@ class role_xenocanto::conf (
   $git_repo_keyname      = 'github.com',
 
   # ::web
-  $environment           = 'prod',  # set 'debug' for debug
   $cron_log              = '/var/log/xeno-canto/cron.log',
-  $datadirs              = ['/data','/data/sounds','/data/graphics'],
+  $datadirs              = ['/data','/data/sounds','/data/graphics','/data/ranges'],
   $web_packages          = ['locales-all',
                              'imagemagick',
                              'libgstreamer1.0-0',

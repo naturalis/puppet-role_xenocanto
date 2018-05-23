@@ -8,7 +8,6 @@ define('CONTACT_EMAIL', 'contact@xeno-canto.org');
 define('ADMINS_EMAIL', ['rplanque@few.vu.nl', 'wp@xeno-canto.org']);
 
 // Log
-define('ENVIRONMENT', '<%= scope.lookupvar('role_xenocanto::conf::environment') %>');
 define('ERROR_LOG_PATH', '/var/log/xeno-canto/xc-error.log');
 define('DEBUG_LOG_PATH', '/var/log/xeno-canto/xc-debug.log');
 
@@ -17,8 +16,8 @@ define('SONOGEN_PATH', '/usr/local/bin/sonogen');
 
 // Recaptcha
 define('RECAPTCHA_VERIFY_URL',  'https://www.google.com/recaptcha/api/siteverify');
-define('RECAPTCHA_SITE_KEY', '<%= scope.lookupvar('role_xenocanto::conf::recaptcha_site_key') %>'); // XC test server http://145.136.240.208
-define('RECAPTCHA_SECRET_KEY', '<%= scope.lookupvar('role_xenocanto::conf::recaptcha_secret_key') %>'); // XC test server http://145.136.240.208
+define('RECAPTCHA_SITE_KEY', '<%= scope.lookupvar('role_xenocanto::conf::recaptcha_site_key') %>');
+define('RECAPTCHA_SECRET_KEY', '<%= scope.lookupvar('role_xenocanto::conf::recaptcha_secret_key') %>');
 
 // Google Analytics
 define('GOOGLE_ANALYTICS_TRACKING_ID', '<%= scope.lookupvar('role_xenocanto::conf::google_analytics_tracking_id') %>');
