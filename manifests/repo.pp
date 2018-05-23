@@ -58,6 +58,24 @@ class role_xenocanto::repo (
     user      => 'root',
     revision  => $role_xenocanto::conf::git_repo_revision,
     require   => [File[$role_xenocanto::conf::git_repo_rootdirs],Package['git']],
+    notify    => [Exec['clear cache'],Exec['composer update']],
+  }
+
+  exec{ 'clear cache' :
+    command     => "rm -f ${role_xenocanto::conf::git_repo_dir}/cache/*",
+    refreshonly => true,
+    path        => '/sbin:/usr/bin:/usr/local/bin/:/bin/',
+    provider    => shell,
+    user        => 'root',
+  }
+
+  exec{ 'composer update' :
+    command     => 'composer update',
+    refreshonly => true,
+    cwd         => $role_xenocanto::conf::git_repo_dir,
+    path        => '/sbin:/usr/bin:/usr/local/bin/:/bin/',
+    provider    => shell,
+    user        => 'root',
   }
 
 }
