@@ -1,197 +1,82 @@
-# == Class: role_xenocanto::web
+# == Class: role_xenocanto::repo
 #
-# This role creates the necessary configuration for the xeno canto webserver
+# === Authors
 #
-class role_xenocanto::web (
-) {
-  # Install support packages
-  ensure_packages($role_xenocanto::conf::web_packages)
+# Author Name <hugo.vanduijn@naturalis.nl>
+#
+#
+class role_xenocanto::repo (
+){
 
-  # Install Postfix mail server
-  class { 'role_xenocanto::mail': }
 
-  # Install PHP with FPM
-  class { '::php':
-    manage_repos => true,
-    ensure     => present,
-    fpm        => false,
-    extensions => {
-      mysql  => {},
-      mcrypt => {},
-      curl   => {},
-    },
-    settings   => {
-        'PHP/max_execution_time'  => '-1',
-        'PHP/max_input_time'      => '-1',
-        'PHP/memory_limit'        => '-1',
-        'PHP/post_max_size'       => $role_xenocanto::conf::php_post_max_size,
-        'PHP/upload_max_filesize' => $role_xenocanto::conf::php_upload_max_filesize,
-        'Date/date.timezone'      => 'Europe/Amsterdam',
+# ensure git package for repo checkouts, conflicts with letsencrypt so only when letsencrypt is disabled.
+
+
+
+  if ( $role_xenocanto::conf::enable_letsencrypt == false ) {
+    package { 'git':
+      ensure => installed,
     }
   }
 
-  class { '::php::apache_config':
-    settings   => {
-        'PHP/max_execution_time'  => $role_xenocanto::conf::php_max_execution_time,
-        'PHP/max_input_time'      => $role_xenocanto::conf::php_max_input_time,
-        'PHP/memory_limit'        => $role_xenocanto::conf::php_memory_limit,
-        'PHP/post_max_size'       => $role_xenocanto::conf::php_post_max_size,
-        'PHP/upload_max_filesize' => $role_xenocanto::conf::php_upload_max_filesize,
-        'Date/date.timezone'      => 'Europe/Amsterdam',
-    }
+  file { $role_xenocanto::conf::git_repo_rootdirs:
+    ensure    => directory,
   }
 
-
-  # Install memcached for caching and user sessions
-  class { 'memcached':
-    max_memory  => 1024,
-    user        => 'memcache',
-    listen_ip   => '127.0.0.1',
-    pidfile     => false,
-    install_dev => true,
-  }
-
-  package { 'php-memcached':
-    ensure      => latest,
-    require     => Class['::php']
-  }
-
-  class { 'apache':
-    default_mods              => true,
-    mpm_module                => 'prefork',
-  }
-
-  # install apache mods
-  class { 'apache::mod::rewrite': }
-  class { 'apache::mod::headers': }
-  class { 'apache::mod::expires': }
-  class { 'apache::mod::proxy': }
-  class { 'apache::mod::proxy_http': }
-  class { 'apache::mod::cache': }
-  class { 'apache::mod::php': }
-
-
-  # enable ssl with or without letsencrypt based on config
-  class { 'role_xenocanto::ssl': }
-
-  # Create instance, make sure ssl certs are installed first.
-  class { 'role_xenocanto::instances':
-    require     => Class['role_xenocanto::ssl'],
-  }
-
-  # Create log directory and logrotate config
-  file { '/var/log/xeno-canto':
-    ensure  => directory,
-    mode    => '0660',
-    owner   => 'www-data',
-    group   => 'root'
-  }
-
-  file { '/etc/logrotate.d/xenocanto':
-    mode    => '0600',
-    source  => 'puppet:///modules/role_xenocanto/logrotate_xenocanto',
-    require => File['/var/log/xeno-canto']
-  }
-
-  # clone repository and create symlink to docroot
-  class { 'role_xenocanto::repo': }
-
-  file { $role_xenocanto::conf::docroot:
-    ensure  => link,
-    target  => $role_xenocanto::conf::git_repo_dir,
-    require => Class['role_xenocanto::repo']
-  }
-
-  file { $role_xenocanto::conf::datadirs:
-    ensure  => directory,
-    owner   => 'www-data',
-    group   => 'root',
-  }
-
-  file { "${role_xenocanto::conf::docroot}/sounds":
-    ensure  => link,
-    target  => '/data/sounds',
-    require => File[$role_xenocanto::conf::datadirs]
-  }
-
-  file { "${role_xenocanto::conf::docroot}/ranges":
-    ensure  => link,
-    target  => '/data/ranges',
-    require => File[$role_xenocanto::conf::datadirs]
-  }
-
-  file { "${role_xenocanto::conf::docroot}/graphics":
-    ensure  => link,
-    target  => '/data/graphics',
-    require => File[$role_xenocanto::conf::datadirs]
-  }
-
-  file { "${role_xenocanto::conf::git_repo_dir}/cache":
-    ensure  => directory,
-    owner   => 'www-data',
-    group   => 'root',
-    require => Class['role_xenocanto::repo']
-  }
-
-
-  file { "${role_xenocanto::conf::docroot}/settings.yml":
+  file { '/root/.ssh':
+    ensure    => directory,
+  }->
+  file { "/root/.ssh/${role_xenocanto::conf::git_repo_keyname}":
     ensure    => 'present',
-    content   =>  template('role_xenocanto/settings.yml.erb'),
-    mode      => '0644',
-    require   => File[$role_xenocanto::conf::docroot]
-  }
-
-  file { "${role_xenocanto::conf::docroot}/config.php":
+    content   => $role_xenocanto::conf::git_repo_key,
+    mode      => '0600',
+  }->
+  file { '/root/.ssh/config':
     ensure    => 'present',
-    content   =>  template('role_xenocanto/config.php.erb'),
-    mode      => '0644',
-    require   => File[$role_xenocanto::conf::docroot]
+    content   =>  template('role_xenocanto/sshconfig.erb'),
+    mode      => '0600',
+  }->
+  file{ '/usr/local/sbin/known_hosts.sh' :
+    ensure    => 'present',
+    mode      => '0700',
+    source    => 'puppet:///modules/role_xenocanto/known_hosts.sh',
+  }->
+  exec{ 'add_known_hosts' :
+    command   => '/usr/local/sbin/known_hosts.sh',
+    path      => '/sbin:/usr/bin:/usr/local/bin/:/bin/',
+    provider  => shell,
+    user      => 'root',
+    unless    => 'test -f /root/.ssh/known_hosts'
+  }->
+  file{ '/root/.ssh/known_hosts':
+    mode      => '0600',
+  }->
+  vcsrepo { $role_xenocanto::conf::git_repo_dir:
+    ensure    => $role_xenocanto::conf::git_repo_ensure,
+    provider  => git,
+    source    => $role_xenocanto::conf::git_repo_source,
+    user      => 'root',
+    revision  => $role_xenocanto::conf::git_repo_revision,
+    require   => [File[$role_xenocanto::conf::git_repo_rootdirs],Package['git']],
+    notify    => [Exec['clear cache'],Exec['composer update']],
   }
 
-  # install sonogen and typefind
-  file { '/usr/local/bin/sonogen':
-    mode    => '0755',
-    source  => 'puppet:///modules/role_xenocanto/sonogen',
+  exec{ 'clear cache' :
+    command     => "rm -f ${role_xenocanto::conf::git_repo_dir}/cache/*",
+    refreshonly => true,
+    path        => '/sbin:/usr/bin:/usr/local/bin/:/bin/',
+    provider    => shell,
+    user        => 'root',
   }
 
-  file { '/usr/local/bin/soundprint':
-    mode    => '0755',
-    source  => 'puppet:///modules/role_xenocanto/soundprint',
-  }
-
-  # Crontabs for xeno-canto
-  cron { 'update-stats cronjob':
-    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/update-stats.php >> ${::role_xenocanto::conf::cron_log}",
-    user    => root,
-    minute  => 0,
-    hour    => '*/2',
-    require => Class['role_xenocanto::repo']
-  }
-
-  cron { 'mail notifications cronjob':
-    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/mail_notifications.php >> ${::role_xenocanto::conf::cron_log}",
-    user    => root,
-    minute  => 1,
-    hour    => 0,
-    require => Class['role_xenocanto::repo']
-  }
-
-  cron { 'rotate-play-stats cronjob':
-    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/rotate-play-stats.php >> ${::role_xenocanto::conf::cron_log}",
-    user    => root,
-    minute  => 15,
-    hour    => 20,
-    require => Class['role_xenocanto::repo']
-  }
-
-  cron { 'generate-full-sonos cronjob':
-    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/generate-full-sonos.php >> ${::role_xenocanto::conf::cron_log}",
-    user    => root,
-    minute  => '*/5',
-    require => Class['role_xenocanto::repo']
+  exec{ 'composer update' :
+    command     => 'composer update',
+    refreshonly => true,
+    cwd         => $role_xenocanto::conf::git_repo_dir,
+    path        => '/sbin:/usr/bin:/usr/local/bin/:/bin/',
+    provider    => shell,
+    user        => 'root',
   }
 
 }
-
-
 
