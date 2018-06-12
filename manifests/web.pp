@@ -41,7 +41,6 @@ class role_xenocanto::web (
     }
   }
 
-
   # Install memcached for caching and user sessions
   class { 'memcached':
     max_memory  => 1024,
@@ -50,7 +49,6 @@ class role_xenocanto::web (
     pidfile     => false,
     install_dev => true,
   }
-
   package { 'php-memcached':
     ensure      => latest,
     require     => Class['::php']
@@ -190,7 +188,6 @@ class role_xenocanto::web (
     minute  => '*/5',
     require => Class['role_xenocanto::repo']
   }
-
 
   if ($::role_xenocanto::conf::rsync_media == true){
     cron { 'rsync media':
