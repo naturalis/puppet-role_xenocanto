@@ -96,5 +96,15 @@ class role_xenocanto::conf (
   $users,
   $grants,
   $db_hash,
+
+  # ::rsync
+  $rsync_pub_key        = '',
+  $rsync_priv_key       = '',
+  $web_host_prod        = 'www.xeno-canto.org',
+  Boolean $rsync_media  = false,
+  $rsync_cron_hour      = '2',
+  $rsync_cron_minute    = '30',
+  $rsync_cron_weekday   = '6',
+
 ) {
 }
