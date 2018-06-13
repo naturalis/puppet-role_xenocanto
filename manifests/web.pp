@@ -189,35 +189,8 @@ class role_xenocanto::web (
     require => Class['role_xenocanto::repo']
   }
 
-  if ($::role_xenocanto::conf::rsync_media == true){
-    cron { 'rsync media':
-      command => '/usr/local/sbin/rsync_media.sh',
-      user    => root,
-      hour    => $::role_xenocanto::conf::rsync_cron_hour,
-      minute  => $::role_xenocanto::conf::rsync_cron_minute,
-      weekday => $::role_xenocanto::conf::rsync_cron_weekday
-    }
-
-    # Script to rsync media files from production to test
-    file { '/usr/local/sbin/rsync_media.sh':
-      content => template('role_xenocanto/rsync_media.erb'),
-      mode   => '0755',
-    }
-
-    # Rsync data at schedules time
-    file { '/etc/logrotate.d/rsync_media':
-      source => 'puppet:///modules/role_xenocanto/rsync_logrotate',
-      mode   => '0644',
-    }
-
-    # Place rsync ssh private key
-    file { '/home/rsync/.ssh/id_rsa':
-      mode    => '0600',
-      content => $::role_xenocanto::conf::rsync_priv_key,
-      require => File['/home/rsync/.ssh'],
-    }
-  }
-
+# install rsync user and setup keys 
+  class { 'role_xenocanto::rsync': }
 
 }
 
