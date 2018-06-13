@@ -13,5 +13,5 @@ touch /var/log/rsync_media.log
 chown rsync:root /var/log/rsync_media.log
 
 # rsync with --delete option, without compression. 
-/bin/su rsync -c "rsync -avh --no-owner --no-group --no-perms --delete --log-file=/var/log/rsync_media.log rsync@<%= scope['::role_xenocanto::conf::web_host_prod'] %>:/data /data"
-/bin/su rsync -c "rsync -avh --no-owner --no-group --no-perms --delete --log-file=/var/log/rsync_media.log rsync@<%= scope['::role_xenocanto::conf::web_host_prod'] %>:/var/www/htdocs/locales /var/www/htdocs/locales"
+/bin/su rsync -c "rsync -avh --no-owner --no-group --no-perms --delete --log-file=/var/log/rsync_media.log rsync@<%= scope['::role_xenocanto::conf::web_host_prod'] %>:/data /"
+/bin/su rsync -c "rsync -avh --no-owner --no-group --no-perms --delete --log-file=/var/log/rsync_media.log rsync@<%= scope['::role_xenocanto::conf::web_host_prod'] %>:/var/www/htdocs/locales /var/www/htdocs/"
