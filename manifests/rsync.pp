@@ -29,21 +29,10 @@ class role_xenocanto::rsync (
     source => 'puppet:///modules/role_xenocanto/rsyncd.conf',
   }
 
-  # Add authorized ssh keys
-  $rsync_ssh_options = [
-    'command="rsync --config=/home/rsync/.rsyncd.conf --server --daemon ."',
-    'no-agent-forwarding',
-    'no-port-forwarding',
-    'no-pty',
-    'no-user-rc',
-    'no-X11-forwarding'
-  ]
-
   $rsync_ssh_defaults = {
     'ensure'  => present,
     'user'    => 'rsync',
     'type'    => 'ssh-rsa',
-    'options' => $rsync_ssh_options,
   }
 
   $rsync_keys = {
