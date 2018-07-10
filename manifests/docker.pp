@@ -19,7 +19,9 @@ class role_xenocanto::docker (
   $minio_access_key             = '12345',
   $minio_secret_key             = '12345678',
   $traefik_toml_file            = '/opt/traefik/traefik.toml',
-  $traefik_acme_json            = '/opt/traefik/acme.json'
+  $traefik_acme_json            = '/opt/traefik/acme.json',
+  $cert_file                    = $role_xenocanto::conf::letsencrypt_hash['xc']['letsencrypt_domains']['0'],
+  $cert_key                     = $role_xenocanto::conf::letsencrypt_hash['xc']['letsencrypt_domains']['0'],
 ){
 
   include 'docker'

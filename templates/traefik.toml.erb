@@ -11,6 +11,9 @@ defaultEntryPoints = ["http","https"]
   [entryPoints.https]
   address = ":443"
     [entryPoints.https.tls]
+      [[entryPoints.https.tls.certificates]]
+      certFile = "/etc/letsencrypt/live/<%= scope['role_xenocanto::docker::cert_file'] %>/fullchain.pem"
+      keyFile = "/etc/letsencrypt/live/<%= scope['role_xenocanto::docker::cert_key'] %>/privkey.pem"
 [retry]
 
 [docker]
@@ -19,12 +22,3 @@ domain = "<%= scope['role_xenocanto::docker::minio_url'] %>"
 watch = true
 exposedbydefault = false
 
-[acme]
-email = "aut@naturalis.nl"
-storage = "acme.json"
-entryPoint = "https"
-onHostRule = true
-onDemand = false
-
-[acme.httpChallenge]
-entryPoint = "http"
