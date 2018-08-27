@@ -83,6 +83,7 @@ class role_xenocanto::conf (
   $php_memory_limit            = '256M',
   $php_post_max_size           = '32M',
   $php_upload_max_filesize     = '128M',
+  $config_environment          = 'prod',  # prod, debug or task
 
   # ::db
   $web_host              = '127.0.0.1',

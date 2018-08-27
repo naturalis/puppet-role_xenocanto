@@ -26,5 +26,5 @@ define('GOOGLE_ANALYTICS_TRACKING_ID', '<%= scope.lookupvar('role_xenocanto::con
 define('GOOGLE_MAPS_API_KEY', '<%= scope.lookupvar('role_xenocanto::conf::google_maps_api_key') %>');
 define('GOOGLE_MAPS_GEOCODING_KEY', '<%= scope.lookupvar('role_xenocanto::conf::google_maps_geocoding_key') %>');
 
-
-
+// Environment: prod, debug or task
+define('ENVIRONMENT', '<%= scope.lookupvar('role_xenocanto::conf::config_environment') %>');
