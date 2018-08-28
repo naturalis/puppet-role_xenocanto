@@ -38,6 +38,7 @@ class role_xenocanto::conf (
   $google_analytics_tracking_id = 'UA-123456-1',
   $google_maps_api_key   = 'API key here',
   $google_maps_geocoding_key = 'Geocoding key',
+  $minio_web_url         = 'https://acceptatie-xc-minio.naturalis.nl:8443/minio',
   $ssl_instances         = {'xeno-canto.org-nonssl' => {
                                  'serveraliases'        => '*.xeno-canto.org',
                                  'docroot'              => '/var/www/htdocs',

@@ -28,3 +28,9 @@ define('GOOGLE_MAPS_GEOCODING_KEY', '<%= scope.lookupvar('role_xenocanto::conf::
 
 // Environment: prod, debug or task
 define('ENVIRONMENT', '<%= scope.lookupvar('role_xenocanto::conf::config_environment') %>');
+
+// Minio
+define('MINIO_BATCH', '/data/minio/batch');
+define('MINIO_RANGES', '/data/minio/ranges');
+define('MINIO_CLASSIFICATION', '/data/minio/classification');
+define('MINIO_WEB', '<%= scope.lookupvar('role_xenocanto::conf::minio_web_url') %>');
