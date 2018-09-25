@@ -13,6 +13,7 @@ class role_xenocanto::conf (
   $git_repo_keyname      = 'github.com',
 
   # ::web
+  $ensure_mailnotifications = 'present',  # set 'absent' for test. 
   $cron_log              = '/var/log/xeno-canto/cron.log',
   $datadirs              = ['/data','/data/sounds','/data/graphics','/data/ranges'],
   $web_packages          = ['locales-all',

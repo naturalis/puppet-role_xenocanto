@@ -180,6 +180,7 @@ class role_xenocanto::web (
     command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/mail_notifications.php >> ${::role_xenocanto::conf::cron_log}",
     user    => root,
     minute  => 1,
+    ensure  => $role_xenocanto::conf::ensure_mailnotifications,
     hour    => 0,
     require => Class['role_xenocanto::repo']
   }
