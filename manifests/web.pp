@@ -200,6 +200,16 @@ class role_xenocanto::web (
     require => Class['role_xenocanto::repo']
   }
 
+  cron { 'NBA json export':
+    command => "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && cd ${::role_xenocanto::conf::git_repo_dir} && php ./tasks/nba-export.php '/data/minio/nba' >> ${::role_xenocanto::conf::cron_log}",
+    user    => root,
+    minute  => 55,
+    hour    => 1,
+    weekday => 1,
+    require => Class['role_xenocanto::repo']
+  }
+
+
 # install rsync user and setup keys 
   class { 'role_xenocanto::rsync': }
 
