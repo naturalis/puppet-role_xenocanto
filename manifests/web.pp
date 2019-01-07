@@ -112,6 +112,7 @@ class role_xenocanto::web (
 
   file { $role_xenocanto::conf::datadirs:
     ensure  => directory,
+    mode    => '0775',
     owner   => 'www-data',
     group   => 'root',
   }
