@@ -30,10 +30,6 @@ class role_xenocanto::conf (
   $docroot               = '/var/www/htdocs',
   $enable_ssl            = false,
   $server_name           = 'test.xeno-canto.org',
-  $letsencrypt_email     = 'letsencrypt@mydomain.me',
-  Hash $letsencrypt_hash        = { 'xc' => { 'letsencrypt_domains' => ['test.xeno-canto.org','wwwtest.xeno-canto.org']}
-                                  },
-  $letsencrypt_server    = 'https://acme-v02.api.letsencrypt.org/directory',
   $recaptcha_site_key    = 'recaptcha_site_key',
   $recaptcha_secret_key  = 'recaptcha_secret_key',
   $google_analytics_tracking_id = 'UA-123456-1',
@@ -83,7 +79,7 @@ class role_xenocanto::conf (
   $php_max_execution_time      = 90,
   $php_max_input_time          = 300,
   $php_memory_limit            = '256M',
-  $php_post_max_size           = '32M',
+  $php_post_max_size           = '128M',
   $php_upload_max_filesize     = '128M',
   $config_environment          = 'prod',  # prod, debug or task
 

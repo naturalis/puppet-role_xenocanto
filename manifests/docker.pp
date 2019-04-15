@@ -34,6 +34,7 @@ class role_xenocanto::docker (
 
   file { ['/data/minio','/data/minio/ranges','/data/minio/batch','/opt/traefik']:
     ensure              => directory,
+    mode                => '0775',
     require             => Class['docker'],
   }
 

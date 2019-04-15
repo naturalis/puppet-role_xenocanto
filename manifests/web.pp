@@ -69,21 +69,6 @@ class role_xenocanto::web (
   class { 'apache::mod::php': }
 
 
-# letsencrypt
-  if $role_xenocanto::conf::enable_ssl == true {
-  # install letsencrypt certs only and crontab
-    class { ::letsencrypt:
-      repo           => 'https://github.com/certbot/certbot.git',
-      install_method => 'vcs',
-      version        => 'master',
-      config         => {
-        email  => $role_xenocanto::conf::letsencrypt_email,
-        server => $role_xenocanto::conf::letsencrypt_server,
-      }
-    }
-    create_resources('role_xenocanto::ssl', $role_xenocanto::conf::letsencrypt_hash,{})
-  }
-
   # Create instance, make sure ssl certs are installed first.
   class { 'role_xenocanto::instances': }
 
