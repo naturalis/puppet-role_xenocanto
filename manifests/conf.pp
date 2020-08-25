@@ -6,7 +6,7 @@ class role_xenocanto::conf (
   # ::repo
   $git_repo_rootdirs     = ['/opt/git'],
   $git_repo_dir          = '/opt/git/xc',
-  $git_repo_source       = 'ssh://git@github.com/naturalis/xc.git',
+  $git_repo_source       = 'https://gitlab.com/naturalis/bii/xeno-canto/xeno-canto.git',
   $git_repo_ensure       = 'latest',
   $git_repo_revision     = 'master',
   $git_repo_key,
