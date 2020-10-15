@@ -49,7 +49,7 @@ class role_xenocanto::web (
     pidfile     => false,
     install_dev => true,
   }
-  package { 'php-memcached':
+  package { 'php7.4-memcached':
     ensure      => latest,
     require     => Class['::php']
   }
